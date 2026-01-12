@@ -112,6 +112,10 @@ pc_clnt_pcat_data_cnt as
     A.PC_ITEM_ID AS item_id,
     NOW() AS fcp_pc_item_modifieddate,
     A.ITEM_SIMG_LARGE AS item_img_500x500
+
+
+
+    
 	FROM
 	(	SELECT Fk_GLUSR_USR_ID,PC_CLNT_PCAT_ID,PC_ITEM_NAME,item_simg,
 		CASE WHEN item_simg_LARGE IS NOT NULL AND POSITION('coming-soon.gif' IN item_simg_LARGE) <= 0 THEN item_simg_LARGE END AS ITEM_SIMG_LARGE,
