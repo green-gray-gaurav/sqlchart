@@ -1,0 +1,42 @@
+name: Generate SQL Graph
+
+on:
+  push:
+    paths:
+      - "sql/**"
+      - "generate_sql_graph.py"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: 📦 Install system deps (Graphviz)
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
+      - name: 📦 Install Python deps
+        run: |
+          pip install sqlglot graphviz
+
+      - name: 🧠 Run SQL → SVG generator
+        run: |
+          python generate_sql_graph.py \
+            --sql sql/query \
+            --out output/sql_graph \
+            --format svg
+
+      - name: 💾 Commit generated SVG
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add output/*.svg
+          git commit -m "auto: generate sql graph" || echo "No changes"
+          git push
